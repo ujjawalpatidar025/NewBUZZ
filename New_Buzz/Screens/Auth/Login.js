@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, {useState} from 'react';
 import {
   View,
@@ -10,8 +11,11 @@ import {
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useToast} from 'react-native-toast-notifications';
 
 const LoginScreen = () => {
+  const toast = useToast();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +23,41 @@ const LoginScreen = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isEmailEmptyPrompt, setIsEmailEmptyPrompt] = useState(false);
   const [isPasswordEmptyPrompt, setIsPasswordEmptyPrompt] = useState(false);
+
+  const handleLogin = async e => {
+    e.preventDefault();
+    if (!email) {
+      toast.show('Email is Required', {
+        type: 'danger',
+      });
+      return;
+    }
+    if (!password) {
+      toast.show('Password is Required', {
+        type: 'danger',
+      });
+      return;
+    }
+    try {
+      const response = await axios.post(
+        'http://192.168.1.4:5000/api/user/login',
+        {email, password},
+      );
+      toast.show(response?.data?.message, {
+        type: 'success',
+      });
+    } catch (err) {
+      console.log(err);
+      if (err?.response?.data?.message)
+        toast.show(err?.response?.data?.message, {
+          type: 'danger',
+        });
+      else
+        toast.show(err?.error?.message, {
+          type: 'danger',
+        });
+    }
+  };
 
   return (
     <>
@@ -102,7 +141,7 @@ const LoginScreen = () => {
           {/* You can re-enable the checkbox here using the proper import */}
 
           {/* Login Button */}
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
 

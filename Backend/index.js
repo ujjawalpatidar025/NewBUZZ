@@ -13,6 +13,10 @@ app.use(bodyParser.json());
 //Connecting to the Data
 connection();
 
+//public routes
+app.get("/", (req, res) => {
+  return res.send("Server is runnig fine");
+});
 //Admin Routes
 app.use("/api/admin", require("./Admin/Admin_routes/adminRoutes"));
 

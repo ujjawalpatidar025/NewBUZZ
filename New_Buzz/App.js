@@ -8,6 +8,7 @@ import LoginScreen from './Screens/Auth/Login';
 import NetInfo from '@react-native-community/netinfo';
 import {ToastProvider, useToast} from 'react-native-toast-notifications';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Toaster from './Screens/Commons/Toaster';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +23,7 @@ const AppNavigator = () => {
       if (toast && typeof toast.show === 'function') {
         toast.show('Connected now', {
           type: 'success',
-          placement: 'top',
+          placement: 'bottom',
           duration: 2000,
         });
       }
@@ -61,25 +62,9 @@ const AppNavigator = () => {
 const App = () => {
   return (
     <ToastProvider
-      renderToast={toastOptions => (
-        <View
-          style={{
-            borderWidth: 0.8,
-            borderRadius: 10,
-            borderColor: '#FF4C4C',
-            backgroundColor: 'white',
-            width: '90%',
-            height: 30,
-            margin: 5,
-            flex: 1,
-            alignContent: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text style={{color: '#FF4C4C', fontSize: 12}}>
-            No Internet Connection
-          </Text>
-        </View>
+      placement="bottom"
+      renderToast={({message, type}) => (
+        <Toaster message={message} type={type} />
       )}>
       <GestureHandlerRootView style={{flex: 1}}>
         <NavigationContainer>
