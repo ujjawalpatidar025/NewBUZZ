@@ -8,11 +8,17 @@ import {
   StatusBar,
   KeyboardAvoidingView,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isEmailEmptyPrompt, setIsEmailEmptyPrompt] = useState(false);
+  const [isPasswordEmptyPrompt, setIsPasswordEmptyPrompt] = useState(false);
 
   return (
     <>
@@ -26,26 +32,53 @@ const LoginScreen = () => {
           <Text style={styles.subTitle}>Welcome back to the app</Text>
 
           {/* Email Input */}
-          <Text style={styles.label}>Email Address</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your email"
-            placeholderTextColor="#888"
-            value={email}
-            cursorColor={'#FF4C4C'}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
+          <View style={{marginBottom: 15}}>
+            <Text style={styles.label}>Email Address</Text>
+            <TextInput
+              style={[styles.input, isEmailFocused && {borderColor: '#FF4C4C'}]}
+              placeholder="Enter your email"
+              placeholderTextColor="#888"
+              value={email}
+              onFocus={() => {
+                setIsEmailFocused(true);
+                setIsEmailEmptyPrompt(true);
+              }}
+              onBlur={() => {
+                setIsEmailFocused(false);
+                setIsEmailEmptyPrompt(true);
+              }}
+              cursorColor={'#FF4C4C'}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+            {!email && isEmailEmptyPrompt && (
+              <Text style={{color: 'red', marginTop: 5, fontSize: 12}}>
+                *Email is Required
+              </Text>
+            )}
+          </View>
 
           {/* Password Input */}
           <Text style={styles.label}>Password</Text>
-          <View style={styles.passwordContainer}>
+          <View
+            style={[
+              styles.passwordContainer,
+              isPasswordFocused && {borderColor: '#FF4C4C'},
+            ]}>
             <TextInput
               style={styles.passwordInput}
               placeholder="Enter your password"
               placeholderTextColor="#888"
               secureTextEntry={!showPassword}
               value={password}
+              onFocus={() => {
+                setIsPasswordFocused(true);
+                setIsPasswordEmptyPrompt(false);
+              }}
+              onBlur={() => {
+                setIsPasswordFocused(false);
+                setIsPasswordEmptyPrompt(true);
+              }}
               cursorColor={'#FF4C4C'}
               onChangeText={setPassword}
             />
@@ -57,6 +90,13 @@ const LoginScreen = () => {
               </Text>
             </TouchableOpacity>
           </View>
+          {!password && isPasswordEmptyPrompt && (
+            <View>
+              <Text style={{color: 'red', marginTop: 5, fontSize: 12}}>
+                *Password is Required
+              </Text>
+            </View>
+          )}
 
           {/* Keep Me Signed In Checkbox */}
           {/* You can re-enable the checkbox here using the proper import */}
@@ -108,7 +148,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 14,
     color: 'gray',
-    marginBottom: 50,
+    marginBottom: 30,
     textAlign: 'left',
   },
   label: {
@@ -122,7 +162,7 @@ const styles = StyleSheet.create({
     borderColor: '#d3d3d3',
     borderRadius: 10,
     padding: 10,
-    marginBottom: 15,
+
     fontSize: 15,
     color: '#000',
   },

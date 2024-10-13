@@ -7,6 +7,7 @@ import NoInternetScreen from './Screens/Commons/NetOffScreen';
 import LoginScreen from './Screens/Auth/Login';
 import NetInfo from '@react-native-community/netinfo';
 import {ToastProvider, useToast} from 'react-native-toast-notifications';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 
@@ -80,9 +81,11 @@ const App = () => {
           </Text>
         </View>
       )}>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <NavigationContainer>
+          <AppNavigator style={{flex: 1, backgroundColor: 'white'}} />
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </ToastProvider>
   );
 };
