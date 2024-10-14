@@ -12,8 +12,10 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useToast} from 'react-native-toast-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_URL} from '../../Config/config';
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const toast = useToast();
 
   const [email, setEmail] = useState('');
@@ -23,9 +25,22 @@ const LoginScreen = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isEmailEmptyPrompt, setIsEmailEmptyPrompt] = useState(false);
   const [isPasswordEmptyPrompt, setIsPasswordEmptyPrompt] = useState(false);
+  const [loading, setloading] = useState(false);
+
+  const storeToken = async (token, user) => {
+    try {
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      console.log('Data stored successfully');
+    } catch (e) {
+      // Handle error
+      console.error('Failed to store the Data', e);
+    }
+  };
 
   const handleLogin = async e => {
     e.preventDefault();
+    setloading(true);
     if (!email) {
       toast.show('Email is Required', {
         type: 'danger',
@@ -39,23 +54,36 @@ const LoginScreen = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        'http://192.168.1.4:5000/api/user/login',
-        {email, password},
-      );
+      const response = await axios.post(`${API_URL}/api/user/login`, {
+        email,
+        password,
+      });
+      const token = response?.data?.token;
+      const user = response?.data?.user;
+
+      // Store the token in AsyncStorage
+      await storeToken(token, user);
       toast.show(response?.data?.message, {
         type: 'success',
       });
+      navigation.replace('HomeNavigate');
     } catch (err) {
       console.log(err);
+
       if (err?.response?.data?.message)
         toast.show(err?.response?.data?.message, {
           type: 'danger',
         });
-      else
+      else if (err?.message) {
+        toast.show(err?.message, {
+          type: 'danger',
+        });
+      } else
         toast.show(err?.error?.message, {
           type: 'danger',
         });
+    } finally {
+      setloading(false);
     }
   };
 
@@ -80,7 +108,7 @@ const LoginScreen = () => {
               value={email}
               onFocus={() => {
                 setIsEmailFocused(true);
-                setIsEmailEmptyPrompt(true);
+                setIsEmailEmptyPrompt(false);
               }}
               onBlur={() => {
                 setIsEmailFocused(false);
@@ -142,7 +170,9 @@ const LoginScreen = () => {
 
           {/* Login Button */}
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>Login</Text>
+            <Text style={styles.loginButtonText}>
+              {loading ? 'Logging in...' : 'Login'}
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.container_line}>

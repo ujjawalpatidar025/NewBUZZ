@@ -21,13 +21,7 @@ const login = async (req, res) => {
     }
 
     // Generate a JWT token
-    const token = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h", // Token expires in 1 hour
-      }
-    );
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
 
     const { password, ...Filteruser } = user._doc;
 
@@ -42,4 +36,29 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+// controller for reset Token
+
+const resetToken = async (req, res) => {
+  try {
+    const email = req.user.email;
+
+    // Check if the user with the given email exists
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized User!" });
+    }
+
+    // Generate a JWT token
+
+    const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
+    const { password, ...FilterUser } = user._doc;
+    return res.status(200).json({ token: token, user: FilterUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { login, resetToken };

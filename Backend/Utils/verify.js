@@ -20,7 +20,7 @@ const verifyToken = (req, res, next) => {
 
   // Remove 'Bearer ' prefix
   try {
-    const decodedUser = jwt.verify(token, process.env.SECRET_KEY); // Replace with your actual secret key
+    const decodedUser = jwt.verify(token, process.env.JWT_SECRET); // Replace with your actual secret key
     req.user = decodedUser; // Attach the decoded user to the request
 
     next();

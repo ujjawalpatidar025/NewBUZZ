@@ -12,20 +12,68 @@ import {
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import ToastContainer, {useToast} from 'react-native-toast-notifications';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {API_URL, getToken, setHeader, storeToken} from '../../Config/config';
 
 const SplashScreen = ({navigation}) => {
   const toast = useToast();
+
+  // const getToken = async () => {
+  //   try {
+  //     const token = await AsyncStorage.getItem('userToken');
+  //     if (token !== null) {
+  //       console.log('Retrieved token:', token);
+  //       return token;
+  //     }
+  //   } catch (e) {
+  //     // Handle error
+  //     console.error('Failed to retrieve the token', e);
+  //   }
+  // };
+
+  // const storeToken = async (token, user) => {
+  //   try {
+  //     await AsyncStorage.setItem('userToken', token);
+  //     await AsyncStorage.setItem('user', JSON.stringify(user));
+  //     console.log('Data stored successfully');
+  //   } catch (e) {
+  //     // Handle error
+  //     console.error('Failed to store the Data', e);
+  //   }
+  // };
   useEffect(() => {
+    const fetchUserInfo = async () => {
+      console.log('started');
+
+      try {
+        const config = await setHeader();
+
+        console.log(config);
+        const resp = await axios.get(`${API_URL}/api/user/refresh`, config);
+
+        const tokenResp = resp?.data?.token;
+        const user = resp?.data?.user;
+
+        // Store the token in AsyncStorage
+        await storeToken(tokenResp, user);
+
+        navigation.replace('HomeNavigate');
+      } catch (err) {
+        console.log(err?.message, 'hello');
+        navigation.replace('Login');
+      }
+    };
+
     const checkInternetConnection = async () => {
       const state = await NetInfo.fetch();
       if (state.isConnected) {
-        setTimeout(() => {
-          navigation.replace('Login');
-        }, 2000); // Simulate loading time
+        fetchUserInfo();
       } else {
         setTimeout(() => {
           navigation.replace('NoInternet');
-        }, 2000);
+        }, 1000);
       }
     };
 

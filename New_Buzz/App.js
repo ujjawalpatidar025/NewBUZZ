@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import SplashScreen from './Screens/Commons/SplashScreen';
 import NoInternetScreen from './Screens/Commons/NetOffScreen';
 import LoginScreen from './Screens/Auth/Login';
@@ -9,6 +9,7 @@ import NetInfo from '@react-native-community/netinfo';
 import {ToastProvider, useToast} from 'react-native-toast-notifications';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Toaster from './Screens/Commons/Toaster';
+import HomeNavigation from './Navigations/HomeNavigation';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,7 @@ const AppNavigator = () => {
         )}
       </Stack.Screen>
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="HomeNavigate" component={HomeNavigation} />
     </Stack.Navigator>
   );
 };
