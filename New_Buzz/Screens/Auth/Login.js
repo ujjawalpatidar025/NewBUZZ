@@ -65,7 +65,7 @@ const LoginScreen = ({navigation}) => {
       toast.show(response?.data?.message, {
         type: 'success',
       });
-      navigation.replace('HomeNavigate');
+      navigation.replace('AppNavigate');
     } catch (err) {
       console.log(err);
 
