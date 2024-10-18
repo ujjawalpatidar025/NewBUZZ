@@ -7,9 +7,8 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import LinearGradient from 'react-native-linear-gradient';
+
+import HistoryRow from './HistoryRow';
 
 const HomeScreen = () => {
   // const [token, settoken] = useState('alsldfnkjdasbfk');
@@ -62,12 +61,12 @@ const HomeScreen = () => {
               </Text>
             </View>
             <Image
-              source={require('../Assets/sitting_home.png')} // Replace with your image URL
+              source={require('../../Assets/sitting_home.png')} // Replace with your image URL
               style={styles.image}
             />
           </View>
           <View style={{paddingHorizontal: 20}}>
-            <Text style={{fontSize: 20, color: '#FF4C4C', paddingBottom: 10}}>
+            <Text style={{fontSize: 20, color: '#FF4C4C', paddingBottom: 0}}>
               S<Text style={{color: 'gray', fontSize: 15}}>tatistics</Text>
             </Text>
             <View
@@ -98,7 +97,10 @@ const HomeScreen = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text style={{color: '#000', fontSize: 16}}>Box 1</Text>
+              <Text style={{color: '#FF4C4C', fontSize: 50}}>
+                4<Text style={{color: 'gray', fontSize: 40}}>8</Text>
+              </Text>
+              <Text style={{color: 'gray', textAlign: 'center'}}>Orders</Text>
             </View>
 
             <View
@@ -113,7 +115,12 @@ const HomeScreen = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text style={{color: '#000', fontSize: 16}}>Box 2</Text>
+              <Text style={{color: '#FF4C4C', fontSize: 50}}>
+                4<Text style={{color: 'gray', fontSize: 40}}>8</Text>
+              </Text>
+              <Text style={{color: 'gray', textAlign: 'center'}}>
+                Working Days
+              </Text>
             </View>
 
             <View
@@ -128,7 +135,12 @@ const HomeScreen = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text style={{color: '#000', fontSize: 16}}>Box 3</Text>
+              <Text style={{color: '#FF4C4C', fontSize: 50}}>
+                4<Text style={{color: 'gray', fontSize: 40}}>8</Text>
+              </Text>
+              <Text style={{color: 'gray', textAlign: 'center'}}>
+                Amount [month]
+              </Text>
             </View>
 
             <View
@@ -143,7 +155,41 @@ const HomeScreen = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text style={{color: '#000', fontSize: 16}}>Box 4</Text>
+              <Text style={{color: '#FF4C4C', fontSize: 50}}>
+                4<Text style={{color: 'gray', fontSize: 40}}>8</Text>
+              </Text>
+              <Text style={{color: 'gray', textAlign: 'center'}}>
+                Purchase amount
+              </Text>
+            </View>
+          </View>
+
+          <View style={{paddingHorizontal: 20, marginTop: 10}}>
+            <Text style={{fontSize: 20, color: '#FF4C4C', paddingBottom: 0}}>
+              H<Text style={{color: 'gray', fontSize: 15}}>istory</Text>
+            </Text>
+            <View
+              style={{
+                margin: 0,
+                backgroundColor: '#FF4C4C',
+                height: 4,
+                width: '10%',
+                marginBottom: 10,
+              }}></View>
+          </View>
+          <View style={{padding: 20}}>
+            <View
+              style={{
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: '#dad5d5', //
+                width: '100%',
+                height: 'auto',
+                overflow: 'hidden',
+              }}>
+              {[1, 2, 3, 4, 5, 4, 5, 5, 4, 4, 4, 4, 4, 4].map((item, index) => (
+                <HistoryRow key={index} index={index} />
+              ))}
             </View>
           </View>
         </ScrollView>

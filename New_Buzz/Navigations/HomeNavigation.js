@@ -1,7 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import HomeScreen from '../Screens/HomeScreen';
 import NetInfo from '@react-native-community/netinfo';
+import HomeScreen from '../Screens/HomeScreen/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 

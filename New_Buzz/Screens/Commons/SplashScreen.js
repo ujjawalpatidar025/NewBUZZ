@@ -59,7 +59,7 @@ const SplashScreen = ({navigation}) => {
         // Store the token in AsyncStorage
         await storeToken(tokenResp, user);
 
-        navigation.replace('HomeNavigate');
+        navigation.replace('AppNavigate');
       } catch (err) {
         console.log(err?.message, 'hello');
         navigation.replace('Login');

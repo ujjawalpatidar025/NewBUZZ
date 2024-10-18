@@ -10,6 +10,7 @@ import {ToastProvider, useToast} from 'react-native-toast-notifications';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Toaster from './Screens/Commons/Toaster';
 import HomeNavigation from './Navigations/HomeNavigation';
+import AppNavigation from './Navigations/AppNavigation';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,7 +57,7 @@ const AppNavigator = () => {
         )}
       </Stack.Screen>
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="HomeNavigate" component={HomeNavigation} />
+      <Stack.Screen name="AppNavigate" component={AppNavigation} />
     </Stack.Navigator>
   );
 };
