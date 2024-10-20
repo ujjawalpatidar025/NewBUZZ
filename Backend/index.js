@@ -3,12 +3,18 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const connection = require("./Utils/DB");
+const cors = require("cors");
 
 const app = express();
 
 // Middleware to parse JSON
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(
+  cors({
+    origin: "*", // replace with your frontend domain
+  })
+);
 
 //Connecting to the Data
 connection();
