@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
+  Linking,
   KeyboardAvoidingView,
 } from 'react-native';
 
@@ -44,12 +45,14 @@ const LoginScreen = ({navigation}) => {
       toast.show('Email is Required', {
         type: 'danger',
       });
+      setloading(false);
       return;
     }
     if (!password) {
       toast.show('Password is Required', {
         type: 'danger',
       });
+      setloading(false);
       return;
     }
     try {
@@ -62,9 +65,7 @@ const LoginScreen = ({navigation}) => {
 
       // Store the token in AsyncStorage
       await storeToken(token, user);
-      toast.show(response?.data?.message, {
-        type: 'success',
-      });
+
       navigation.replace('AppNavigate');
     } catch (err) {
       console.log(err);
@@ -179,7 +180,12 @@ const LoginScreen = ({navigation}) => {
             <Text style={styles.text}>or Sign in Admin</Text>
             <View style={styles.line} />
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://new-buzz-admin.vercel.app/').catch(err =>
+                console.error("Couldn't load page", err),
+              );
+            }}>
             <Text
               style={{
                 color: 'gray',

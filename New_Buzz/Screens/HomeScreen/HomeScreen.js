@@ -6,12 +6,24 @@ import {
   View,
   StyleSheet,
   Image,
+  Button,
+  TouchableOpacity,
 } from 'react-native';
 
 import HistoryRow from './HistoryRow';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 
 const HomeScreen = () => {
   // const [token, settoken] = useState('alsldfnkjdasbfk');
+  const navigation = useNavigation();
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   // const getToken = async () => {
   //   try {
@@ -34,21 +46,95 @@ const HomeScreen = () => {
   //   fetchToken();
   // }, []);
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      setModalVisible(false);
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Failed to clear AsyncStorage:', error);
+    }
+  };
+
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#FF4C4C" />
+      <Modal isVisible={isModalVisible}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignContent: 'center',
+          }}>
+          <View
+            style={{
+              width: '90%',
+              paddingHorizontal: 20,
+              paddingVertical: 30,
+              backgroundColor: 'white',
+              borderRadius: 25,
+            }}>
+            <Text
+              style={{
+                paddingBottom: 20,
+                color: 'gray',
+                textAlign: 'center',
+                fontSize: 15,
+              }}>
+              Are you sure to logout ???
+            </Text>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={{
+                  paddingHorizontal: 15,
+                  paddingVertical: 10,
+
+                  borderRadius: 15,
+                  backgroundColor: '#FF4C4C',
+                }}>
+                <Text
+                  style={{fontWeight: 'bold', fontSize: 15, color: 'white'}}>
+                  Logout
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={{
+                  paddingHorizontal: 15,
+                  paddingVertical: 10,
+
+                  borderRadius: 15,
+                  backgroundColor: 'gray',
+                }}>
+                <Text
+                  style={{fontWeight: 'bold', fontSize: 15, color: 'white'}}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <View style={{flex: 1}}>
         <View
           style={{
             paddingHorizontal: 15,
             paddingVertical: 20,
-
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             backgroundColor: '#FF4C4C',
           }}>
           <Text style={{color: 'white', fontSize: 15, fontWeight: '600'}}>
             Sanwariya New Born Garments
           </Text>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Icon name="logout" size={30} color={'white'} />
+          </TouchableOpacity>
         </View>
         <ScrollView>
           <View style={styles.container}>
