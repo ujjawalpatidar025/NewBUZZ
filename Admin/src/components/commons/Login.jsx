@@ -23,7 +23,7 @@ const Login = () => {
 
       const data = response?.data;
       localStorage.setItem("adminToken", data.token);
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
     } finally {

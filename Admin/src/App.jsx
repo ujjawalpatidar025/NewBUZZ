@@ -12,32 +12,11 @@ function App() {
 
   useEffect(() => {
     const fetchuser = async () => {
-      setloading(true);
-
       let token = null;
-      if (localStorage.getItem("adminToken")) {
-        token = localStorage.getItem("adminToken");
-      }
-      const url = import.meta.env.VITE_API_URL;
 
-      const config = setHeader();
-
-      try {
-        if (token) {
-          const response = await axios.get(`${url}/api/user/refresh`, config);
-          const data = response?.data;
-
-          if (data) {
-            // Set user data in local storage
-            localStorage.setItem("userData", data?.token);
-            navigate("/");
-          }
-        }
-      } catch (err) {
-        console.log(err);
-        navigate("/login");
-      } finally {
-        setloading(false);
+      token = localStorage.getItem("adminToken");
+      if (!token) {
+        navigate("/");
       }
     };
 
