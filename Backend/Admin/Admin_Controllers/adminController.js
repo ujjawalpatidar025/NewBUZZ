@@ -38,7 +38,7 @@ const createUser = async (req, res) => {
 
   try {
     // Check if the user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await Admin.findOne({ email });
     if (existingUser) {
       return res
         .status(400)
@@ -46,7 +46,7 @@ const createUser = async (req, res) => {
     }
 
     // Create a new user
-    const newUser = new User({
+    const newUser = new Admin({
       username,
       email,
       password,
@@ -65,7 +65,7 @@ const createUser = async (req, res) => {
 
 const getAllUser = async (req, res) => {
   try {
-    const response = await User.find();
+    const response = await Admin.find();
 
     res.status(200).json({ users: response });
   } catch (error) {

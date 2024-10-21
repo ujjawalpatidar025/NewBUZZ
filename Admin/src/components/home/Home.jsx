@@ -8,6 +8,9 @@ import axios from "axios";
 const Home = () => {
   const [openCreate, setopenCreate] = useState(false);
   const [loading, setloading] = useState(false);
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [username, setusername] = useState("");
   const [users, setusers] = useState([]);
   const navigate = useNavigate();
 
@@ -15,7 +18,14 @@ const Home = () => {
     const fetchAllUsers = async () => {
       try {
         setloading(true);
+
         const config = setHeader();
+
+        const token = localStorage.getItem("adminToken");
+        if (!token) {
+          navigate("/");
+          return;
+        }
         const response = await axios.get(
           `${API_URL}/api/admin/get-all-user`,
           setHeader()
@@ -31,6 +41,36 @@ const Home = () => {
 
     fetchAllUsers();
   }, []);
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    setloading(true);
+    try {
+      const config = setHeader();
+      const token = localStorage.getItem("adminToken");
+      if (!token) {
+        navigate("/");
+        return;
+      }
+
+      const response = await axios.post(
+        `${API_URL}/api/admin/create-user`,
+        { email, password, username },
+        config
+      );
+      setemail("");
+      setpassword("");
+      setusername("");
+      setopenCreate(false);
+
+      const updatedUsers = [...users, response?.data?.user];
+      setusers(updatedUsers);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setloading(false);
+    }
+  };
 
   return (
     <>
@@ -60,6 +100,8 @@ const Home = () => {
                     </label>
                     <input
                       type="text"
+                      onChange={(e) => setusername(e.target.value)}
+                      value={username}
                       id="username"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Enter your username"
@@ -76,6 +118,8 @@ const Home = () => {
                     </label>
                     <input
                       type="email"
+                      onChange={(e) => setemail(e.target.value)}
+                      value={email}
                       id="email"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="name@flowbite.com"
@@ -93,6 +137,8 @@ const Home = () => {
                     <input
                       type="password"
                       id="password"
+                      onChange={(e) => setpassword(e.target.value)}
+                      value={password}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Enter your password"
                       required
@@ -102,6 +148,7 @@ const Home = () => {
 
                 <div className="mt-5">
                   <button
+                    onClick={handleCreateUser}
                     type="submit"
                     className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
@@ -117,13 +164,13 @@ const Home = () => {
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                       <th scope="col" className="px-6 py-3">
-                        USERNAME
+                        Email
                       </th>
                       <th scope="col" className="px-6 py-3">
-                        EMAIL
+                        Password
                       </th>
                       <th scope="col" className="px-6 py-3">
-                        PASSWORD
+                        Username
                       </th>
                     </tr>
                   </thead>
