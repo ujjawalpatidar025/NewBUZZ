@@ -63,4 +63,15 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { adminLogin, createUser };
+const getAllUser = async (req, res) => {
+  try {
+    const response = await User.find();
+
+    res.status(200).json({ users: response });
+  } catch (error) {
+    console.error("Error getting all users:", error);
+    res.status(500).json({ message: "Internal Server error" });
+  }
+};
+
+module.exports = { adminLogin, createUser, getAllUser };

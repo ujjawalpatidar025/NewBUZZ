@@ -1,12 +1,36 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../commons/navbar";
 import Loading from "../commons/loading";
-import { setHeader } from "../../constant";
+import { API_URL, setHeader } from "../../constant";
 import { useNavigate, useNavigation } from "react-router-dom";
+import axios from "axios";
 
 const Home = () => {
   const [openCreate, setopenCreate] = useState(false);
   const [loading, setloading] = useState(false);
+  const [users, setusers] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        setloading(true);
+        const config = setHeader();
+        const response = await axios.get(
+          `${API_URL}/api/admin/get-all-user`,
+          setHeader()
+        );
+        setusers(response?.data?.users);
+      } catch (error) {
+        console.log(error);
+        navigate("/");
+      } finally {
+        setloading(false);
+      }
+    };
+
+    fetchAllUsers();
+  }, []);
 
   return (
     <>
@@ -104,20 +128,16 @@ const Home = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                      <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        Apple MacBook Pro 17"
-                      </td>
-                      <td className="px-6 py-4">Silver</td>
-                      <td className="px-6 py-4">Laptop</td>
-                    </tr>
-                    <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                      <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        Microsoft Surface Pro
-                      </td>
-                      <td className="px-6 py-4">White</td>
-                      <td className="px-6 py-4">Laptop PC</td>
-                    </tr>
+                    {users &&
+                      users.map((item) => (
+                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                          <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {item?.email}
+                          </td>
+                          <td className="px-6 py-4">{item?.password}</td>
+                          <td className="px-6 py-4">{item?.username}</td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
