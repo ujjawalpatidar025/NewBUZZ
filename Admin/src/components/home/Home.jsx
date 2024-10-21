@@ -91,25 +91,7 @@ const Home = () => {
             {openCreate && (
               <div className="mb-5">
                 <div className="flex flex-wrap gap-4 md:flex-nowrap">
-                  <div className="w-full md:w-1/3">
-                    <label
-                      for="username"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      onChange={(e) => setusername(e.target.value)}
-                      value={username}
-                      id="username"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Enter your username"
-                      required
-                    />
-                  </div>
-
-                  <div className="w-full md:w-1/3">
+                  <div className="w-full md:w-1/2">
                     <label
                       for="email"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -127,7 +109,7 @@ const Home = () => {
                     />
                   </div>
 
-                  <div className="w-full md:w-1/3">
+                  <div className="w-full md:w-1/2">
                     <label
                       for="password"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -169,9 +151,6 @@ const Home = () => {
                       <th scope="col" className="px-6 py-3">
                         Password
                       </th>
-                      <th scope="col" className="px-6 py-3">
-                        Username
-                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -182,7 +161,6 @@ const Home = () => {
                             {item?.email}
                           </td>
                           <td className="px-6 py-4">{item?.password}</td>
-                          <td className="px-6 py-4">{item?.username}</td>
                         </tr>
                       ))}
                   </tbody>

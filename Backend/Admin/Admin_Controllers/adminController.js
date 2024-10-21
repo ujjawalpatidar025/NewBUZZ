@@ -47,7 +47,6 @@ const createUser = async (req, res) => {
 
     // Create a new user
     const newUser = new Admin({
-      username,
       email,
       password,
     });
