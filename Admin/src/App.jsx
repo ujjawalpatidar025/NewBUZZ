@@ -1,41 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, BrowserRouter } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import Login from "./components/commons/Login";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import Home from "./components/home/Home";
 
-import Loading from "./components/commons/loading";
-import axios from "axios";
-import AppRoute from "./AppRoute";
-import { setHeader } from "./constant";
-
-function App() {
-  const [loading, setloading] = useState(false);
+const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchuser = async () => {
-      let token = null;
-
-      token = localStorage.getItem("adminToken");
-      if (!token) {
-        navigate("/");
-      }
-    };
-
-    fetchuser();
+    const token = localStorage.getItem("admin_token");
+    if (!token) {
+      localStorage.clear();
+      navigate("/");
+    }
   }, []);
 
-  const AppMain = () => {
-    return (
-      <div className="max-w-7xl mx-auto">
-        {loading ? <Loading /> : <AppRoute />}
-      </div>
-    );
-  };
-
   return (
-    <>
-      <AppMain />
-    </>
+    <div>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Home />} />
+      </Routes>
+    </div>
   );
-}
+};
 
 export default App;

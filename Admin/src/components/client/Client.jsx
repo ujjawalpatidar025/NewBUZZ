@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../commons/navbar";
+import Navbar from "../commons/Navbar";
 
 const Client = () => {
   return (

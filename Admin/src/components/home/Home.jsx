@@ -1,176 +1,184 @@
-import React, { useEffect, useState } from "react";
-import Navbar from "../commons/navbar";
-import Loading from "../commons/loading";
-import { API_URL, setHeader } from "../../constant";
-import { useNavigate, useNavigation } from "react-router-dom";
-import axios from "axios";
+import { Navbar } from "../commons/navbar";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Users, PlusCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const admins = [
+  { id: 1, name: "John Doe", email: "john@example.com", password: "hello" },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    password: "hello",
+  },
+  {
+    id: 3,
+    name: "Bob Johnson",
+    email: "bob@example.com",
+    password: "hello",
+  },
+];
 
 const Home = () => {
-  const [openCreate, setopenCreate] = useState(false);
-  const [loading, setloading] = useState(false);
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const [username, setusername] = useState("");
-  const [users, setusers] = useState([]);
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        setloading(true);
-
-        const config = setHeader();
-
-        const token = localStorage.getItem("adminToken");
-        if (!token) {
-          navigate("/");
-          return;
-        }
-        const response = await axios.get(
-          `${API_URL}/api/admin/get-all-user`,
-          setHeader()
-        );
-        setusers(response?.data?.users);
-      } catch (error) {
-        console.log(error);
-        navigate("/");
-      } finally {
-        setloading(false);
-      }
-    };
-
-    fetchAllUsers();
-  }, []);
-
-  const handleCreateUser = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setloading(true);
-    try {
-      const config = setHeader();
-      const token = localStorage.getItem("adminToken");
-      if (!token) {
-        navigate("/");
-        return;
-      }
-
-      const response = await axios.post(
-        `${API_URL}/api/admin/create-user`,
-        { email, password, username },
-        config
-      );
-      setemail("");
-      setpassword("");
-      setusername("");
-      setopenCreate(false);
-
-      const updatedUsers = [...users, response?.data?.user];
-      setusers(updatedUsers);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setloading(false);
-    }
+    // Handle form submission here
+    setIsOpen(false);
   };
 
   return (
-    <>
-      {loading && <Loading />}
-      {!loading && (
-        <div>
-          <Navbar />
-          <div className="max-w-screen-xl flex flex-col flex-wrap   mx-auto p-4">
-            <div className="py-4">
-              <button
-                type="button"
-                onClick={() => setopenCreate(!openCreate)}
-                className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Create User +
-              </button>
-            </div>
-            {openCreate && (
-              <div className="mb-5">
-                <div className="flex flex-wrap gap-4 md:flex-nowrap">
-                  <div className="w-full md:w-1/2">
-                    <label
-                      for="email"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      onChange={(e) => setemail(e.target.value)}
-                      value={email}
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="name@flowbite.com"
-                      required
-                    />
-                  </div>
+    <div>
+      <Navbar />
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="container mx-auto px-4 py-8 w-full sm:w-5/6">
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold mb-2 text-gray-800 dark:text-white">
+              Welcome to New Buzz Admin
+            </h1>
+            <h2 className="text-xl text-gray-600 dark:text-gray-400 mb-4">
+              Manage your admin users with ease
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              This dashboard allows you to view and manage all registered admin
+              users. You can add new admins, view their details, and ensure
+              secure access to your system.
+            </p>
+          </div>
 
-                  <div className="w-full md:w-1/2">
-                    <label
-                      for="password"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      onChange={(e) => setpassword(e.target.value)}
-                      value={password}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Enter your password"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-5">
-                  <button
-                    onClick={handleCreateUser}
-                    type="submit"
-                    className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div>
-              <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full max-w-[90vw]  pt-4">
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      <th scope="col" className="px-6 py-3">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="sm:text-2xl text-md font-semibold text-gray-800 dark:text-white flex items-center">
+                <Users className="mr-2" />
+                Registered Admins
+              </h3>
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-black text-white hover:bg-gray-800">
+                    <PlusCircle className="mr-2 h-4 w-4" /> Add Admin
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[400px] w-[95vw]  rounded-md bg-white dark:bg-gray-800">
+                  <DialogHeader>
+                    <DialogTitle className="text-gray-800 dark:text-white">
+                      Add New Admin
+                    </DialogTitle>
+                    <DialogDescription className="text-gray-600 dark:text-gray-400">
+                      Enter the details of the new admin user.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <Label
+                        htmlFor="name"
+                        className="text-gray-700 dark:text-gray-300"
+                      >
+                        Name
+                      </Label>
+                      <Input
+                        id="name"
+                        placeholder="Enter name"
+                        className="bg-gray-100 dark:bg-gray-700"
+                      />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="email"
+                        className="text-gray-700 dark:text-gray-300"
+                      >
                         Email
-                      </th>
-                      <th scope="col" className="px-6 py-3">
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter email"
+                        className="bg-gray-100 dark:bg-gray-700"
+                      />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="password"
+                        className="text-gray-700 dark:text-gray-300"
+                      >
                         Password
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users &&
-                      users.map((item) => (
-                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                          <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {item?.email}
-                          </td>
-                          <td className="px-6 py-4">{item?.password}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
+                      </Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="Enter password"
+                        className="bg-gray-100 dark:bg-gray-700"
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full bg-black text-white hover:bg-gray-800"
+                    >
+                      Submit
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-100 dark:bg-gray-700">
+                    <TableHead className="text-gray-700 dark:text-gray-300">
+                      Name
+                    </TableHead>
+                    <TableHead className="text-gray-700 dark:text-gray-300">
+                      Email
+                    </TableHead>
+                    <TableHead className="text-gray-700 dark:text-gray-300">
+                      Password
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {admins.map((admin) => (
+                    <TableRow
+                      key={admin.id}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                      <TableCell className="text-gray-800 dark:text-gray-300">
+                        {admin.name}
+                      </TableCell>
+                      <TableCell className="text-gray-800 dark:text-gray-300">
+                        {admin.email}
+                      </TableCell>
+                      <TableCell className="text-gray-800 dark:text-gray-300">
+                        {admin.password}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 

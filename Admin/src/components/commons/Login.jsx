@@ -1,93 +1,111 @@
-import React, { useState } from "react";
-import Loading from "./loading";
-import { API_URL, setHeader } from "@/constant";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useFormState } from "react-dom";
+import { Eye, EyeOff } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setloading] = useState(false);
+  const [showError, setshowError] = useState(null);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setloading(true);
-    const url = API_URL;
-    const config = setHeader();
     try {
-      const response = await axios.post(`${API_URL}/api/admin/login`, {
-        email,
-        password,
-      });
-
-      const data = response?.data;
-      localStorage.setItem("adminToken", data.token);
+      const LOGIN_URL = `${import.meta.env.VITE_API_URL}/api/admin/login`;
+      const response = await axios.post(LOGIN_URL, { password, email });
+      localStorage.clear();
+      localStorage.setItem("admin_token", response?.data?.token);
       navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
+      setshowError(err?.response?.data?.message);
     } finally {
       setloading(false);
     }
   };
 
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
+
   return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="p-4 w-full h-full">
-          <h1 className="py-8 text-center text-2xl font-bold">
-            Admin Login BuzzyNess
-          </h1>
-          <form class="max-w-sm mx-auto">
-            <div class="mb-5">
-              <label
-                for="email"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Your email
-              </label>
-              <input
-                type="email"
+    <div className="w-full h-screen p-2 flex justify-center items-center">
+      <Card className="mx-auto max-w-sm">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">
+            New-Buzz Admin Login
+          </CardTitle>
+          <CardDescription>
+            Enter your email and password to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
                 id="email"
-                onChange={(e) => setemail(e.target.value)}
+                name="email"
+                type="email"
+                placeholder="m@example.com"
+                required
                 value={email}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="name@gmail.com"
-                required
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div class="mb-5">
-              <label
-                for="password"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Your password
-              </label>
-              <input
-                type="password"
-                id="password"
-                onChange={(e) => setpassword(e.target.value)}
-                value={password}
-                placeholder="**********"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">
+                    {showPassword ? "Hide password" : "Show password"}
+                  </span>
+                </Button>
+              </div>
             </div>
-
-            <button
-              type="submit"
-              onClick={handleLogin}
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Submit
-            </button>
+            <Button type="submit" className="w-full">
+              {loading ? "Logging in..." : "Login"}
+            </Button>
+            {showError && <p className="text-sm text-red-500">{showError}</p>}
           </form>
-        </div>
-      )}
-    </>
+        </CardContent>
+      </Card>
+    </div>
   );
-};
-
-export default Login;
+}
